@@ -17,138 +17,39 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: transparent;
         }
 
         .timer-container {
             background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 15px 25px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
             text-align: center;
         }
 
-        .timer-title {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .timer-subtitle {
-            font-size: 14px;
-            color: #999;
-            margin-bottom: 30px;
-        }
-
         .timer-display {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
             font-family: 'Courier New', monospace;
-            font-size: 48px;
+            font-size: 32px;
             font-weight: bold;
-            color: #333;
-            letter-spacing: 2px;
-        }
-
-        .timer-unit {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .timer-value {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            min-width: 80px;
-            line-height: 1;
-        }
-
-        .timer-label {
-            font-size: 12px;
-            color: #999;
-            margin-top: 8px;
-            text-transform: uppercase;
-            font-weight: bold;
+            color: #000;
             letter-spacing: 1px;
-        }
-
-        .separator {
-            font-size: 48px;
-            color: #ddd;
-            align-self: flex-start;
-            margin-top: 20px;
-        }
-
-        .timer-expired {
-            font-size: 24px;
-            color: #e74c3c;
-            font-weight: bold;
         }
 
         @media (max-width: 600px) {
             .timer-container {
-                padding: 20px;
-            }
-
-            .timer-title {
-                font-size: 20px;
+                padding: 12px 20px;
             }
 
             .timer-display {
-                gap: 10px;
-                font-size: 32px;
-            }
-
-            .timer-value {
-                padding: 15px;
-                min-width: 60px;
-            }
-
-            .timer-label {
-                font-size: 10px;
-            }
-
-            .separator {
-                font-size: 32px;
+                font-size: 24px;
             }
         }
     </style>
 </head>
 <body>
     <div class="timer-container">
-        <div class="timer-title">Countdown Timer</div>
-        <div class="timer-subtitle">Get ready...</div>
-        
-        <div class="timer-display" id="timer">
-            <div class="timer-unit">
-                <div class="timer-value" id="days">00</div>
-                <div class="timer-label">Days</div>
-            </div>
-            <div class="separator">:</div>
-            <div class="timer-unit">
-                <div class="timer-value" id="hours">00</div>
-                <div class="timer-label">Hours</div>
-            </div>
-            <div class="separator">:</div>
-            <div class="timer-unit">
-                <div class="timer-value" id="minutes">00</div>
-                <div class="timer-label">Minutes</div>
-            </div>
-            <div class="separator">:</div>
-            <div class="timer-unit">
-                <div class="timer-value" id="seconds">00</div>
-                <div class="timer-label">Seconds</div>
-            </div>
-            <div class="separator">.</div>
-            <div class="timer-unit">
-                <div class="timer-value" id="tenths" style="min-width: 50px;">0</div>
-                <div class="timer-label">Tenths</div>
-            </div>
-        </div>
+        <div class="timer-display" id="timer">00:00:00:00.0</div>
     </div>
 
     <script>
@@ -174,13 +75,7 @@
 
             if (difference <= 0) {
                 // Timer expired
-                document.getElementById('days').textContent = '00';
-                document.getElementById('hours').textContent = '00';
-                document.getElementById('minutes').textContent = '00';
-                document.getElementById('seconds').textContent = '00';
-                document.getElementById('tenths').textContent = '0';
-                document.querySelector('.timer-subtitle').textContent = 'Time is up!';
-                document.querySelector('.timer-subtitle').style.color = '#e74c3c';
+                document.getElementById('timer').textContent = '00:00:00:00.0';
                 return;
             }
 
@@ -195,12 +90,15 @@
             const milliseconds = difference % 1000;
             const tenths = Math.floor(milliseconds / 100);
 
-            // Update display with zero-padding
-            document.getElementById('days').textContent = String(days).padStart(2, '0');
-            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-            document.getElementById('tenths').textContent = tenths;
+            // Format as DD:HH:MM:SS.T
+            const formattedTime = 
+                String(days).padStart(2, '0') + ':' +
+                String(hours).padStart(2, '0') + ':' +
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0') + '.' +
+                tenths;
+
+            document.getElementById('timer').textContent = formattedTime;
         }
 
         // Update every 100 milliseconds for smooth tenths display
