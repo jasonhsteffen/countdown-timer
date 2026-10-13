@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .timer-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .timer-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .timer-subtitle {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        .timer-display {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 2px;
+        }
+
+        .timer-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-value {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 80px;
+            line-height: 1;
+        }
+
+        .timer-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .separator {
+            font-size: 48px;
+            color: #ddd;
+            align-self: flex-start;
+            margin-top: 20px;
+        }
+
+        .timer-expired {
+            font-size: 24px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .timer-container {
+                padding: 20px;
+            }
+
+            .timer-title {
+                font-size: 20px;
+            }
+
+            .timer-display {
+                gap: 10px;
+                font-size: 32px;
+            }
+
+            .timer-value {
+                padding: 15px;
+                min-width: 60px;
+            }
+
+            .timer-label {
+                font-size: 10px;
+            }
+
+            .separator {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-container">
+        <div class="timer-title">Countdown Timer</div>
+        <div class="timer-subtitle">Get ready...</div>
+        
+        <div class="timer-display" id="timer">
+            <div class="timer-unit">
+                <div class="timer-value" id="days">00</div>
+                <div class="timer-label">Days</div>
+            </div>
+            <div class="separator">:</div>
+            <div class="timer-unit">
+                <div class="timer-value" id="hours">00</div>
+                <div class="timer-label">Hours</div>
+            </div>
+            <div class="separator">:</div>
+            <div class="timer-unit">
+                <div class="timer-value" id="minutes">00</div>
+                <div class="timer-label">Minutes</div>
+            </div>
+            <div class="separator">:</div>
+            <div class="timer-unit">
+                <div class="timer-value" id="seconds">00</div>
+                <div class="timer-label">Seconds</div>
+            </div>
+            <div class="separator">.</div>
+            <div class="timer-unit">
+                <div class="timer-value" id="tenths" style="min-width: 50px;">0</div>
+                <div class="timer-label">Tenths</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION - EDIT THESE VALUES
+        // ============================================
+        
+        // Set your target date and time here
+        // Format: new Date('YYYY-MM-DD HH:mm:ss')
+        const targetDate = new Date('2025-12-31 23:59:59');
+        
+        // Optional: Set a timezone (e.g., 'America/New_York', 'Europe/London')
+        // Leave empty string for user's local timezone
+        const timezone = '';
+
+        // ============================================
+        // COUNTDOWN LOGIC
+        // ============================================
+
+        function updateTimer() {
+            const now = new Date();
+            const difference = targetDate - now;
+
+            if (difference <= 0) {
+                // Timer expired
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                document.getElementById('tenths').textContent = '0';
+                document.querySelector('.timer-subtitle').textContent = 'Time is up!';
+                document.querySelector('.timer-subtitle').style.color = '#e74c3c';
+                return;
+            }
+
+            // Calculate time units
+            const totalSeconds = Math.floor(difference / 1000);
+            const days = Math.floor(totalSeconds / (60 * 60 * 24));
+            const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
+            const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+            const seconds = totalSeconds % 60;
+            
+            // Calculate tenths (one decimal place)
+            const milliseconds = difference % 1000;
+            const tenths = Math.floor(milliseconds / 100);
+
+            // Update display with zero-padding
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            document.getElementById('tenths').textContent = tenths;
+        }
+
+        // Update every 100 milliseconds for smooth tenths display
+        setInterval(updateTimer, 100);
+        
+        // Initial call
+        updateTimer();
+    </script>
+</body>
+</html>
